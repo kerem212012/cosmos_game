@@ -1,7 +1,7 @@
 import asyncio
 from itertools import cycle
 
-from animations.curses_tools import draw_frame
+from animations.curses_tools import draw_frame, get_frame_size, read_controls
 
 
 def twice_cycle(iterable):
@@ -20,7 +20,15 @@ def get_rockets():
 
 
 async def animate_spaceship(canvas, row, column):
-    for frame in twice_cycle(get_rockets()):
+    rockets = get_rockets()
+    row_height, column_width = canvas.getmaxyx()
+    frame_height ,frame_width = get_frame_size(rockets[0])
+    motion_height = row_height-frame_height
+    motion_width = column_width-frame_width
+    for frame in twice_cycle(rockets):
+        rows_direction, columns_direction, space_pressed = read_controls(canvas)
+        row = max(1, min(row + rows_direction, motion_height))
+        column = max(1, min(column + columns_direction, motion_width))
         draw_frame(canvas, row, column, frame)
         await asyncio.sleep(0)
         draw_frame(canvas, row, column, frame, negative=True)

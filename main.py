@@ -1,8 +1,7 @@
-import random
 import time
 
 from animations.fire_animation import *
-from animations.stars import blink,get_stars
+from animations.stars import get_stars
 from animations.starship import animate_spaceship
 
 TIC_TIMEOUT = 0.1
@@ -10,12 +9,11 @@ TIC_TIMEOUT = 0.1
 
 def draw(canvas):
     curses.curs_set(False)
+    canvas.nodelay(True)
     row, column = curses.window.getmaxyx(canvas)
-    stars = get_stars(canvas,row,column)
-    ship = animate_spaceship(canvas,row/2-3,column/2)
-    coroutines = [*stars,ship]
-
-
+    stars = get_stars(canvas, row, column)
+    ship = animate_spaceship(canvas, row / 2 - 3, column / 2)
+    coroutines = [*stars, ship]
 
     while True:
         for coroutine in coroutines:
